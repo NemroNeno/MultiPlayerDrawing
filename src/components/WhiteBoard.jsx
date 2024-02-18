@@ -14,11 +14,11 @@ const WhiteBoard = ({
   roomId,
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
-  const [rip,setRip]=useState(true);     // If it true, then last update was true
+  const [rip, setRip] = useState(true); // If it true, then last update was true
+  const [socketID, setSocketId] = useState("");
 
   useEffect(() => {
     socket.on("test", (data) => {
-      console.log(data);
       if (data?.name == user) return;
       else {
         setRip(false);
@@ -88,18 +88,17 @@ const WhiteBoard = ({
         );
       }
     });
-    if(rip){
+    if (rip) {
       socket.emit("newData", {
         pic: elements,
         name: user,
         roomId: roomId,
       });
     }
-    
   }, [elements]); // Update when elements or tool changes
 
   const handleMouseDown = (e) => {
-    setRip(true)
+    setRip(true);
     const { offsetX, offsetY } = e.nativeEvent;
 
     if (tool === "pencil") {
@@ -199,6 +198,7 @@ const WhiteBoard = ({
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
+      
       className="h-[100%] w-[100%] overflow-hidden"
     >
       <canvas ref={canvasRef} />

@@ -3,12 +3,6 @@ const app = express();
 const cors = require("cors");
 
 const { Server } = require("socket.io");
-app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    credentials: true,
-  })
-);
 
 const server = app.listen(5000, () => {
   console.log("App started at port 5000");
@@ -16,7 +10,7 @@ const server = app.listen(5000, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
   },
 });
 
@@ -30,19 +24,17 @@ io.on("connection", (socket) => {
     socket.emit("userIsJoined", data.roomId, { success: true });
     console.log("userIsJoined in room: ", data.roomId);
   });
-  let room,name;
+  let room, name;
   socket.on("newData", (data) => {
-    console.log(data.name);
-    room=data.roomId
-    name=data.name
-    socket.broadcast.emit("test", {
+    console.log(data.roomId);
+    room = data.roomId;
+    name = data.name;
+    io.to(room).emit("test", {
       name: data.name,
-      pic:data.pic
+      pic: data.pic,
     });
     //console.log("Emitted newDataReceived event to room:", data.roomId);
   });
 
- 
-   
-
+  //U3IxhA1QeZAC_r5wAABd
 });

@@ -7,23 +7,32 @@ var randomToken = require("random-token");
 
 const CreateRoom = ({ setUser, socket, setRoomIdProp }) => {
   const navig = useNavigate();
-  const [roomId, setRoomId] = useState(randomToken(20));
+  const [roomId, setRoomId] = useState("");
   const [joinRoom, setJoinRoom] = useState();
   const [name, setName] = useState("");
   const [nameJoin, setNameJoin] = useState("");
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      setRoomId(socket.id);
+      console.log("connected", socket.id);
+    });
+  }, []);
+
   const handleCreateRoom = async () => {
     try {
-      if (!name || !roomId) return;
       const data = {
         name,
-        roomId,
+        roomId: roomId,
         userId: randomToken(10),
         host: true,
       };
       setUser(name);
       setRoomIdProp(roomId);
 
-      socket.emit("userJoined", data);
+      socket.emit("userJoined", {
+        roomId: roomId,
+      });
       navig(`/${roomId}`);
     } catch (error) {
       console.log(error);
