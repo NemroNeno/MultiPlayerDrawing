@@ -26,7 +26,6 @@ io.on("connection", (socket) => {
   });
   let room, name;
   socket.on("newData", (data) => {
-    console.log(data.roomId);
     room = data.roomId;
     name = data.name;
     io.to(room).emit("test", {
